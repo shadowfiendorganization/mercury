@@ -117,7 +117,7 @@
     </bean>
 
     <!-- session 创建、删除、查询 -->
-    <bean id="jedisShiroSessionRepository" class="com.sojson.core.shiro.cache.JedisShiroSessionRepository">
+    <bean id="jedisShiroSessionRepository" class="com.atlandes.auth.shiro.session.JedisShiroSessionRepository">
         <property name="jedisManager" ref="jedisManager"/>
     </bean>
 

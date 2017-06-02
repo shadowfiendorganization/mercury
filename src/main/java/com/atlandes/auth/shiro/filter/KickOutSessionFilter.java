@@ -1,7 +1,9 @@
 package com.atlandes.auth.shiro.filter;
 
 import com.alibaba.fastjson.JSON;
+import com.atlandes.auth.shiro.authentication.TokenManager;
 import com.atlandes.auth.shiro.session.ShiroSessionRepository;
+import com.atlandes.auth.shiro.util.CacheUtils;
 import com.atlandes.auth.shiro.util.ShiroFilterUtils;
 import com.atlandes.auth.shiro.util.ShiroLogUtils;
 import org.apache.shiro.session.Session;
@@ -16,6 +18,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -37,6 +40,9 @@ public class KickOutSessionFilter extends AccessControlFilter {
 
     //  操作session
     private static ShiroSessionRepository shiroSessionRepository;
+
+    //  缓存
+    private static CacheUtils cache;
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request,
@@ -66,8 +72,44 @@ public class KickOutSessionFilter extends AccessControlFilter {
 
         Serializable sessionId = session.getId();
 
-        // TODO: 2017/5/27 未完成 冲突登录踢出
+        //从缓存获取用户-Session信息 <UserId,SessionId>
+        LinkedHashMap<Long, Serializable> infoMap = cache.get(ONLINE_USER, LinkedHashMap.class);
+        //如果不存在，创建一个新的
+        infoMap = null == infoMap ? new LinkedHashMap<Long, Serializable>() : infoMap;
 
+        //获取tokenId
+        Long userId = TokenManager.getUserId();
+
+        //如果已经包含当前Session，并且是同一个用户，跳过。
+        if (infoMap.containsKey(userId) && infoMap.containsValue(sessionId)) {
+            //更新存储到缓存1个小时（这个时间最好和session的有效期一致或者大于session的有效期）
+            cache.setWithExpireTime(ONLINE_USER, infoMap, 3600);
+            return Boolean.TRUE;
+        }
+
+        // 如果用户相同，Session不相同，那么就要处理了 1.获取到原来的session，并且标记为踢出。 2.继续走
+        if (infoMap.containsKey(userId) && !infoMap.containsValue(sessionId)) {
+            Serializable oldSessionId = infoMap.get(userId);
+            Session oldSession = shiroSessionRepository.getSession(oldSessionId);
+            if (null != oldSession) {
+                //标记session已经踢出
+                oldSession.setAttribute(KICK_OUT_STATUS, Boolean.TRUE);
+                shiroSessionRepository.saveSession(oldSession);//更新session
+                ShiroLogUtils.fmtDebug(getClass(), "kickout old session success,oldId[%s]", oldSessionId);
+            } else {
+                shiroSessionRepository.deleteSession(oldSessionId);
+                infoMap.remove(userId);
+                //存储到缓存1个小时（这个时间最好和session的有效期一致或者大于session的有效期）
+                cache.setWithExpireTime(ONLINE_USER, infoMap, 3600);
+            }
+            return Boolean.TRUE;
+        }
+
+        if (!infoMap.containsKey(userId) && !infoMap.containsValue(sessionId)) {
+            infoMap.put(userId, sessionId);
+            //存储到缓存1个小时（这个时间最好和session的有效期一致或者大于session的有效期）
+            cache.setWithExpireTime(ONLINE_USER, infoMap, 3600);
+        }
         return Boolean.TRUE;
     }
 
@@ -109,6 +151,5 @@ public class KickOutSessionFilter extends AccessControlFilter {
     public static void setKickOutUrl(String kickOutUrl) {
         KickOutSessionFilter.KICK_OUT_URL = kickOutUrl;
     }
-
 
 }

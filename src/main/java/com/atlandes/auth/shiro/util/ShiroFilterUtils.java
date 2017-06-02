@@ -10,11 +10,13 @@ import java.io.PrintWriter;
 import java.util.Map;
 
 /**
+ * Created by XD.Wang on 2017/5/28.
  * 拦截器工具类
  */
 public class ShiroFilterUtils {
 
     public final static Class<? extends ShiroFilterUtils> CLAZZ = ShiroFilterUtils.class;
+
     //登录页面
     static final String LOGIN_URL = "/u/login.shtml";
     //踢出登录提示
