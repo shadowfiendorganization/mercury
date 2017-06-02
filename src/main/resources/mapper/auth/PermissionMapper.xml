@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.atlandes.auth.permission">
+<mapper namespace="com.atlandes.auth.dao.PermissionMapper">
 
     <resultMap id="BaseResultMap" type="com.atlandes.auth.po.Permission">
         <id column="id" property="id" jdbcType="BIGINT"/>
@@ -43,23 +43,24 @@
     </select>
 
     <select id="selectPermissionById" resultType="perBO">
-        select
-          p.id,
-          r.id as roleId,
-          p.name,
-          p.url,
-          ifnull(uur.uid,0) as marker
-        from auth_permission p
-        left join auth_re_role_and_permission rp on rp.pid = p.id
-        left join (select id from auth_role where id = #{id,jdbcType=BIGINT}) r on r.id = rp.rid
-        group by p.id
+        SELECT
+            p.id,
+            r.id               AS roleId,
+            p.name,
+            p.url,
+            ifnull(uur.uid, 0) AS marker
+        FROM auth_permission p
+            LEFT JOIN auth_re_role_and_permission rp ON rp.pid = p.id
+            LEFT JOIN (SELECT id
+                       FROM auth_role
+                       WHERE id = #{id,jdbcType=BIGINT}) r ON r.id = rp.rid
+        GROUP BY p.id
     </select>
 
     <select id="findPermissionUrlByUserId" resultType="java.lang.String">
-  		select
-  		  p.url
-        from auth_permission p, auth_re_role_and_permission rp, auth_re_user_and_role ur
-		where uid =#{id,jdbcType=BIGINT} and p.id = rp.pid and rp.rid = ur.rid
+        SELECT p.url
+        FROM auth_permission p, auth_re_role_and_permission rp, auth_re_user_and_role ur
+        WHERE uid = #{id,jdbcType=BIGINT} AND p.id = rp.pid AND rp.rid = ur.rid
     </select>
 
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
@@ -70,19 +71,20 @@
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete from auth_permission where id = #{id,jdbcType=BIGINT}
+        DELETE FROM auth_permission
+        WHERE id = #{id,jdbcType=BIGINT}
     </delete>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.atlandes.auth.po.Permission">
-        insert into auth_permission (
-          id,
-          url,
-          name
+        INSERT INTO auth_permission (
+            id,
+            url,
+            name
         )
-        values (
-          #{id,jdbcType=BIGINT},
-          #{url,jdbcType=VARCHAR},
-          #{name,jdbcType=VARCHAR}
+        VALUES (
+            #{id,jdbcType=BIGINT},
+            #{url,jdbcType=VARCHAR},
+            #{name,jdbcType=VARCHAR}
         )
     </insert>
 
@@ -127,9 +129,9 @@
     </update>
 
     <update id="updateByPrimaryKey" parameterType="com.atlandes.auth.po.Permission">
-        update auth_permission
-        set url = #{url,jdbcType=VARCHAR}, name = #{name,jdbcType=VARCHAR}
-        where id = #{id,jdbcType=BIGINT}
-  </update>
+        UPDATE auth_permission
+        SET url = #{url,jdbcType=VARCHAR}, name = #{name,jdbcType=VARCHAR}
+        WHERE id = #{id,jdbcType=BIGINT}
+    </update>
 
 </mapper>

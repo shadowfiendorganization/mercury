@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.atlandes.auth.user">
+<mapper namespace="com.atlandes.auth.dao.UserMapper">
 
     <resultMap id="BaseResultMap" type="com.atlandes.auth.po.User">
         <id column="id" property="id" jdbcType="BIGINT"/>
@@ -13,7 +13,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, nickname, email, password, create_time, last_login_time,status
+        nickname, id, email, password, create_time, last_login_time, status
     </sql>
 
     <sql id="limit_sql">
@@ -36,13 +36,13 @@
     <select id="findAll" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from u_user
+        from auth_user
         <include refid="where_all"/>
         <include refid="limit_sql"/>
     </select>
 
     <select id="findCount" resultMap="BaseResultMap">
-        select count(id) from u_user
+        select count(id) from auth_user
         <include refid="where_all"/>
     </select>
 
@@ -50,7 +50,7 @@
     <select id="findUserAndRole" resultType="com.atlandes.auth.bo.RoleAllocationBO">
         select u.id,u.nickname,u.email,u.create_time,u.last_login_time,u.status ,group_concat(ur.name)
         roleNames,group_concat(ur.id)roleIds from
-        u_user u
+        auth_user u
         left join auth_re_user_and_role uur on uur.uid = u.id
         left join auth_role ur on ur.id = uur.rid
         <where>
@@ -65,23 +65,25 @@
     </select>
 
     <select id="selectRoleByUserId" resultType="com.atlandes.auth.bo.UserBO">
-        select
+        SELECT
             ur.id,
             ur.name,
             ur.type,
-            ifnull(uu.id,0) as marker,
-            uu.id as userId
-        from auth_role ur
-        left join auth_re_user_and_role uur on uur.rid = ur.id
-        left join (select id from u_user where id =#{id,jdbcType=BIGINT}) uu on uu.id = uur.uid
-        group by ur.id
+            ifnull(uu.id, 0) AS marker,
+            uu.id            AS userId
+        FROM auth_role ur
+            LEFT JOIN auth_re_user_and_role uur ON uur.rid = ur.id
+            LEFT JOIN (SELECT id
+                       FROM auth_user
+                       WHERE id = #{id,jdbcType=BIGINT}) uu ON uu.id = uur.uid
+        GROUP BY ur.id
     </select>
 
     <!-- 登录 -->
     <select id="login" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from u_user
+        from auth_user
         where email = #{email,jdbcType=VARCHAR} and password = #{password,jdbcType=VARCHAR}
     </select>
 
@@ -89,44 +91,44 @@
     <select id="findUserByEmail" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from u_user
+        from auth_user
         where email = #{email,jdbcType=VARCHAR}
     </select>
 
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
         select
         <include refid="Base_Column_List"/>
-        from u_user
+        from auth_user
         where id = #{id,jdbcType=BIGINT}
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete from u_user
-        where id = #{id,jdbcType=BIGINT}
+        DELETE FROM auth_user
+        WHERE id = #{id,jdbcType=BIGINT}
     </delete>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.atlandes.auth.po.User">
-        insert into u_user (
-        id,
-        nickname,
-        email,
-        password,
-        create_time,
-        last_login_time,
-        status
-      ) values (
-        #{id,jdbcType=BIGINT},
-        #{nickname,jdbcType=VARCHAR},
-        #{email,jdbcType=VARCHAR},
-        #{password,jdbcType=VARCHAR},
-        #{createTime,jdbcType=TIMESTAMP},
-        #{lastLoginTime,jdbcType=TIMESTAMP},
-        #{status,jdbcType=BIGINT}
-      )
+        INSERT INTO auth_user (
+            id,
+            nickname,
+            email,
+            password,
+            create_time,
+            last_login_time,
+            status
+        ) VALUES (
+            #{id,jdbcType=BIGINT},
+            #{nickname,jdbcType=VARCHAR},
+            #{email,jdbcType=VARCHAR},
+            #{password,jdbcType=VARCHAR},
+            #{createTime,jdbcType=TIMESTAMP},
+            #{lastLoginTime,jdbcType=TIMESTAMP},
+            #{status,jdbcType=BIGINT}
+        )
     </insert>
 
     <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.atlandes.auth.po.User">
-        insert into u_user
+        insert into auth_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -176,7 +178,7 @@
     </insert>
 
     <update id="updateByPrimaryKeySelective" parameterType="com.atlandes.auth.po.User">
-        update u_user
+        update auth_user
         <set>
             <if test="nickname != null">
                 nickname = #{nickname,jdbcType=VARCHAR},
@@ -201,14 +203,14 @@
     </update>
 
     <update id="updateByPrimaryKey" parameterType="com.atlandes.auth.po.User">
-        update u_user
-        set nickname = #{nickname,jdbcType=VARCHAR},
-            email = #{email,jdbcType=VARCHAR},
-            password = #{password,jdbcType=VARCHAR},
-            create_time = #{createTime,jdbcType=TIMESTAMP},
+        UPDATE auth_user
+        SET nickname        = #{nickname,jdbcType=VARCHAR},
+            email           = #{email,jdbcType=VARCHAR},
+            password        = #{password,jdbcType=VARCHAR},
+            create_time     = #{createTime,jdbcType=TIMESTAMP},
             last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
-            status = #{status,jdbcType=BIGINT}
-        where id = #{id,jdbcType=BIGINT}
-  </update>
+            status          = #{status,jdbcType=BIGINT}
+        WHERE id = #{id,jdbcType=BIGINT}
+    </update>
 
 </mapper>

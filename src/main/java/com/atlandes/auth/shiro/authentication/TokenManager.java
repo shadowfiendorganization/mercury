@@ -46,7 +46,7 @@ public class TokenManager {
      * @return NAME
      */
     public static String getNickname() {
-        return getToken().getNickName();
+        return getToken().getNickname();
     }
 
     /**

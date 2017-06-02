@@ -16,6 +16,16 @@ public class UserBO {
 
     private Long userId;
 
+    private String nickname;
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
     public Long getId() {
         return id;
     }

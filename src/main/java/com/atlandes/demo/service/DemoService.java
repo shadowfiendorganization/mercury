@@ -1,6 +1,6 @@
 package com.atlandes.demo.service;
 
-import com.atlandes.demo.dao.DemoDao;
+import com.atlandes.demo.dao.DemoMapper;
 import com.atlandes.demo.po.Demo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,13 +18,13 @@ public class DemoService {
 
     @Resource
     private
-    DemoDao demoDAO;
+    DemoMapper demoMapper;
 
     private static final Logger log = LoggerFactory.getLogger(DemoService.class);
 
     public List<Demo> getDemoList() {
         log.debug("get com.atlandes.demo list execute.");
-        return demoDAO.getDemoList();
+        return demoMapper.getDemoList();
     }
 
 }
