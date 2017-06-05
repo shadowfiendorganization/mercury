@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atlandes.admin.dao.MenuMapper">
+
+    <resultMap id="BaseResultMap" type="com.atlandes.admin.po.Menu">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="menu_id" property="menuId" jdbcType="BIGINT"/>
+        <result column="code" property="code" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+        <result column="level" property="level" jdbcType="SMALLINT"/>
+        <result column="parent_code" property="parentCode" jdbcType="VARCHAR"/>
+        <result column="sort_id" property="sortId" jdbcType="VARCHAR"/>
+        <result column="is_valid" property="isValid" jdbcType="TINYINT"/>
+        <result column="is_visible" property="isVisible" jdbcType="TINYINT"/>
+    </resultMap>
+    <select id="getMenuList" resultMap="BaseResultMap">
+        SELECT * FROM admin_menu
+    </select>
+    <select id="selectMenuById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT * FROM admin_menu WHERE id = #{id}
+    </select>
+    <insert id="addMenu" parameterType="com.atlandes.admin.po.Menu" flushCache="true">
+        INSERT INTO admin_menu (des) VALUES (#{des})
+    </insert>
+    <update id="updateMenu" parameterType="com.atlandes.admin.po.Menu">
+        UPDATE admin_menu SET des=#{des} WHERE id=#{id}
+    </update>
+    <delete id="deleteMenu" parameterType="java.lang.Integer">
+        DELETE FROM admin_menu WHERE id=#{id}
+    </delete>
+</mapper>
