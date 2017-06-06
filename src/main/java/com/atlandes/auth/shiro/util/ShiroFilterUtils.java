@@ -1,12 +1,14 @@
 package com.atlandes.auth.shiro.util;
 
 import com.alibaba.fastjson.JSON;
+import com.atlandes.common.constant.HttpCode;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -18,11 +20,11 @@ public class ShiroFilterUtils {
     public final static Class<? extends ShiroFilterUtils> CLAZZ = ShiroFilterUtils.class;
 
     //登录页面
-    static final String LOGIN_URL = "/u/login.shtml";
+    public static final String LOGIN_URL = "/u/login.shtml";
     //踢出登录提示
-    final static String KICKED_OUT = "/open/kickedOut.shtml";
+    public final static String KICKED_OUT = "/open/kickedOut.shtml";
     //没有权限提醒
-    final static String UNAUTHORIZED = "/open/unauthorized.shtml";
+    public final static String UNAUTHORIZED = "/open/unauthorized.shtml";
 
     /**
      * 是否是Ajax请求
@@ -55,5 +57,14 @@ public class ShiroFilterUtils {
                 out.close();
             }
         }
+    }
+
+    // 拒绝登录
+    public static void refuseAjax(ServletResponse response) {
+        Map<String, String> resultMap = new HashMap<String, String>();
+        ShiroLogUtils.debug(ShiroFilterUtils.CLAZZ, "当前用户没有登录，并且是Ajax请求！");
+        resultMap.put("login_status", HttpCode.AUTHENTICATION_REFUSED);
+        resultMap.put("message", "\u5F53\u524D\u7528\u6237\u6CA1\u6709\u767B\u5F55\uFF01");
+        ShiroFilterUtils.out(response, resultMap);
     }
 }

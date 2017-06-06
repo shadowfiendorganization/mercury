@@ -6,6 +6,7 @@ import com.atlandes.auth.shiro.session.ShiroSessionRepository;
 import com.atlandes.auth.shiro.util.CacheUtils;
 import com.atlandes.auth.shiro.util.ShiroFilterUtils;
 import com.atlandes.auth.shiro.util.ShiroLogUtils;
+import com.atlandes.common.constant.HttpCode;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.AccessControlFilter;
@@ -14,6 +15,7 @@ import org.apache.shiro.web.util.WebUtils;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
@@ -23,9 +25,7 @@ import java.util.Map;
 
 /**
  * Created by XD.Wang on 2017/5/27.
- * 踢人功能：
- * 异步请求（ajax）返回提示信息
- * 普通请求踢回登录页
+ * 踢出校验
  */
 @SuppressWarnings({"unchecked", "static-access"})
 public class KickOutSessionFilter extends AccessControlFilter {
@@ -37,13 +37,15 @@ public class KickOutSessionFilter extends AccessControlFilter {
     private final static String KICK_OUT_STATUS = KickOutSessionFilter.class.getCanonicalName() + "_kickOut_status";
     //  敏感资源目录
     private final static String SENSITIVE_URL = "/safe/";
-
-    //  操作session
+    //  操作Session
     private static ShiroSessionRepository shiroSessionRepository;
-
     //  缓存
     private static CacheUtils cache;
 
+    /**
+     * 异步请求（ajax）返回提示信息
+     * 普通请求踢回登录页
+     */
     @Override
     protected boolean isAccessAllowed(ServletRequest request,
                                       ServletResponse response, Object mappedValue) throws Exception {
@@ -63,7 +65,7 @@ public class KickOutSessionFilter extends AccessControlFilter {
             //判断是不是Ajax请求
             if (ShiroFilterUtils.isAjax(request)) {
                 ShiroLogUtils.debug(getClass(), "当前用户已经在其他地方登录，with Ajax请求！");
-                resultMap.put("user_status", "300");
+                resultMap.put("user_status", HttpCode.AUTHENTICATION_CANCEL);
                 resultMap.put("message", "您已经在其他地方登录，请重新登录！");
                 out(response, resultMap);
             }

@@ -22,4 +22,9 @@ public class UserService {
         return u;
     }
 
+    public Integer insert(User user) {
+        Integer newId = userMapper.insert(user);
+        return newId;
+    }
+
 }

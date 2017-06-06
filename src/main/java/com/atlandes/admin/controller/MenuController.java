@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +25,18 @@ public class MenuController {
     MenuService menuService;
 
     private static Logger log = Logger.getLogger(MenuController.class);
+
+    /**
+     * 菜单管理主页面
+     * @return 路径
+     */
+    @ResponseBody
+    @RequestMapping("main")
+    public ModelAndView mainPage(){
+        ModelAndView modelAndView = new ModelAndView("admin/menu");
+       // modelAndView.addObject("name", "xxx");
+        return modelAndView;
+    }
 
     @ResponseBody
     @RequestMapping("getMenuList")
