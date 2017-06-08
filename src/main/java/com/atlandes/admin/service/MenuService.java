@@ -23,16 +23,21 @@ public class MenuService {
     public List<Menu> getMenuList(){
         return menuMapper.getMenuList();
     }
-    public Menu selectMenuById(int id){
-        return menuMapper.selectMenuById(id);
+
+    public Menu selectMenuById(int id) {
+        return menuMapper.selectByPrimaryKey(id);
     }
-    public int addMenu(){
-        return menuMapper.addMenu();
+
+    public int addMenu(Menu menu){
+        return menuMapper.insert(menu);
     }
+
     public int deleteMenu(int id){
-        return menuMapper.deleteMenu(id);
+
+        return menuMapper.deleteByPrimaryKey(id);
     }
+
     public int updateMenu(Menu menu){
-        return menuMapper.updateMenu(menu);
+        return menuMapper.updateByPrimaryKey(menu);
     };
 }

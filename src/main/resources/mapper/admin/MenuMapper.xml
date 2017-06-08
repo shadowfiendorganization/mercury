@@ -1,34 +1,190 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.atlandes.admin.dao.MenuMapper">
-
-    <resultMap id="BaseResultMap" type="com.atlandes.admin.po.Menu">
-        <id column="id" property="id" jdbcType="BIGINT"/>
-        <result column="menu_id" property="menuId" jdbcType="BIGINT"/>
-        <result column="code" property="code" jdbcType="VARCHAR"/>
-        <result column="name" property="name" jdbcType="VARCHAR"/>
-        <result column="remark" property="remark" jdbcType="VARCHAR"/>
-        <result column="url" property="url" jdbcType="VARCHAR"/>
-        <result column="level" property="level" jdbcType="SMALLINT"/>
-        <result column="parent_code" property="parentCode" jdbcType="VARCHAR"/>
-        <result column="sort_id" property="sortId" jdbcType="VARCHAR"/>
-        <result column="is_valid" property="isValid" jdbcType="TINYINT"/>
-        <result column="is_visible" property="isVisible" jdbcType="TINYINT"/>
-    </resultMap>
-    <select id="getMenuList" resultMap="BaseResultMap">
-        SELECT * FROM admin_menu
-    </select>
-    <select id="selectMenuById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-        SELECT * FROM admin_menu WHERE id = #{id}
-    </select>
-    <insert id="addMenu" parameterType="com.atlandes.admin.po.Menu" flushCache="true">
-        INSERT INTO admin_menu (des) VALUES (#{des})
-    </insert>
-    <update id="updateMenu" parameterType="com.atlandes.admin.po.Menu">
-        UPDATE admin_menu SET des=#{des} WHERE id=#{id}
-    </update>
-    <delete id="deleteMenu" parameterType="java.lang.Integer">
-        DELETE FROM admin_menu WHERE id=#{id}
-    </delete>
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atlandes.admin.dao.MenuMapper" >
+  <resultMap id="BaseResultMap" type="com.atlandes.admin.po.Menu" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="module_id" property="moduleId" jdbcType="INTEGER" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="SMALLINT" />
+    <result column="parent_code" property="parentCode" jdbcType="VARCHAR" />
+    <result column="sort_id" property="sortId" jdbcType="INTEGER" />
+    <result column="is_valid" property="isValid" jdbcType="TINYINT" />
+    <result column="is_visible" property="isVisible" jdbcType="TINYINT" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.atlandes.admin.po.Menu" extends="BaseResultMap" >
+    <result column="url" property="url" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, module_id, code, name, remark, level, parent_code, sort_id, is_valid, is_visible
+  </sql>
+  <sql id="Blob_Column_List" >
+    url
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from admin_menu
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="getMenuList" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from admin_menu
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from admin_menu
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.atlandes.admin.po.Menu" >
+    insert into admin_menu (id, module_id, code, 
+      name, remark, level, 
+      parent_code, sort_id, is_valid, 
+      is_visible, url)
+    values (#{id,jdbcType=INTEGER}, #{moduleId,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{level,jdbcType=SMALLINT}, 
+      #{parentCode,jdbcType=VARCHAR}, #{sortId,jdbcType=INTEGER}, #{isValid,jdbcType=TINYINT}, 
+      #{isVisible,jdbcType=TINYINT}, #{url,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.atlandes.admin.po.Menu" >
+    insert into admin_menu
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="moduleId != null" >
+        module_id,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="level != null" >
+        level,
+      </if>
+      <if test="parentCode != null" >
+        parent_code,
+      </if>
+      <if test="sortId != null" >
+        sort_id,
+      </if>
+      <if test="isValid != null" >
+        is_valid,
+      </if>
+      <if test="isVisible != null" >
+        is_visible,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="moduleId != null" >
+        #{moduleId,jdbcType=INTEGER},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=SMALLINT},
+      </if>
+      <if test="parentCode != null" >
+        #{parentCode,jdbcType=VARCHAR},
+      </if>
+      <if test="sortId != null" >
+        #{sortId,jdbcType=INTEGER},
+      </if>
+      <if test="isValid != null" >
+        #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="isVisible != null" >
+        #{isVisible,jdbcType=TINYINT},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.atlandes.admin.po.Menu" >
+    update admin_menu
+    <set >
+      <if test="moduleId != null" >
+        module_id = #{moduleId,jdbcType=INTEGER},
+      </if>
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        level = #{level,jdbcType=SMALLINT},
+      </if>
+      <if test="parentCode != null" >
+        parent_code = #{parentCode,jdbcType=VARCHAR},
+      </if>
+      <if test="sortId != null" >
+        sort_id = #{sortId,jdbcType=INTEGER},
+      </if>
+      <if test="isValid != null" >
+        is_valid = #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="isVisible != null" >
+        is_visible = #{isVisible,jdbcType=TINYINT},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.atlandes.admin.po.Menu" >
+    update admin_menu
+    set module_id = #{moduleId,jdbcType=INTEGER},
+      code = #{code,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      level = #{level,jdbcType=SMALLINT},
+      parent_code = #{parentCode,jdbcType=VARCHAR},
+      sort_id = #{sortId,jdbcType=INTEGER},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      is_visible = #{isVisible,jdbcType=TINYINT},
+      url = #{url,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.atlandes.admin.po.Menu" >
+    update admin_menu
+    set module_id = #{moduleId,jdbcType=INTEGER},
+      code = #{code,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      level = #{level,jdbcType=SMALLINT},
+      parent_code = #{parentCode,jdbcType=VARCHAR},
+      sort_id = #{sortId,jdbcType=INTEGER},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      is_visible = #{isVisible,jdbcType=TINYINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
 </mapper>

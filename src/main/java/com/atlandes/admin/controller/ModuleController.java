@@ -1,10 +1,9 @@
 package com.atlandes.admin.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.atlandes.admin.po.BaseInfo;
-import com.atlandes.admin.service.BaseInfoService;
+import com.atlandes.admin.po.Module;
+import com.atlandes.admin.service.ModuleService;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,13 +16,13 @@ import java.util.List;
  * Created by Liucong on 2017/05/26.
  */
 @Controller
-@RequestMapping("BaseInfo")
-public class BaseInfoController {
+@RequestMapping("module")
+public class ModuleController {
 
     @Resource
-    BaseInfoService baseInfoService;
+    ModuleService moduleService;
 
-    private static Logger log = Logger.getLogger(BaseInfoController.class);
+    private static Logger log = Logger.getLogger(ModuleController.class);
 
     /**
      * 获取模块列表
@@ -31,33 +30,33 @@ public class BaseInfoController {
      * @return 模块列表
      */
     @ResponseBody
-    @RequestMapping("selectModule")
+    @RequestMapping("getModuleList")
     public String selectModul(){
-        List<BaseInfo> moudleList = baseInfoService.getMoudleList();
+        List<Module> moudleList = moduleService.getMoudleList();
         return JSON.toJSONString(moudleList);
     }
 
     /**
      * 新增模块
-     * @param baseInfo 模块
+     * @param module 模块
      * @return 状态值
      */
     @ResponseBody
     @RequestMapping("addModule")
-    public int addModul(BaseInfo baseInfo){
-        int a = baseInfoService.add(baseInfo);
+    public int addModul(Module module){
+        int a = moduleService.add(module);
         return a;
     }
 
     /**
      * 修改模块
-     * @param baseInfo 模块
+     * @param module 模块
      * @return 状态值
      */
     @ResponseBody
     @RequestMapping("updModule")
-    public int updModul(BaseInfo baseInfo){
-        int a = baseInfoService.update(baseInfo);
+    public int updModul(Module module){
+        int a = moduleService.update(module);
         return a;
     }
 
@@ -68,8 +67,8 @@ public class BaseInfoController {
      */
     @ResponseBody
     @RequestMapping("delModule")
-    public int delModul(Long id){
-        baseInfoService.delete(id);
+    public int delModul(int id){
+        moduleService.delete(id);
         return 1;
     }
 
@@ -80,8 +79,8 @@ public class BaseInfoController {
      */
     @ResponseBody
     @RequestMapping("selectModuleById")
-    public String selectModuleById(Long id){
-        BaseInfo moudle = baseInfoService.selectModuleById(id);
-        return JSON.toJSONString(moudle);
+    public String selectModuleById(Integer id){
+        Module module = moduleService.selectModuleById(id);
+        return JSON.toJSONString(module);
     }
 }

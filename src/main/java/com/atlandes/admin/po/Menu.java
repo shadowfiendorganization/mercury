@@ -1,44 +1,42 @@
 package com.atlandes.admin.po;
 
-import java.io.Serializable;
-import java.util.ArrayList;
+public class Menu {
+    private Integer id;
 
-/**
- * 系统菜单实体类
- * Created by TOSHIBA on 2017/06/04.
- */
-public class Menu implements Serializable{
+    private Integer moduleId;
 
-    private static final long SerialzationUID = 1L;
-
-    private int id;
-    private int menuId;
     private String code;
+
     private String name;
+
     private String remark;
+
+    private Short level;
+
+    private String parentCode;
+
+    private Integer sortId;
+
+    private Byte isValid;
+
+    private Byte isVisible;
+
     private String url;
-    private int level;//级别
-    private String parentCode;//父编号
-    private int sortId;//排序
-    private int isValid;//是否有效
-    private int isVisible;//是否可见
 
-    private ArrayList<Menu> childs = new ArrayList<Menu>();//子菜单列表
-
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getMenuId() {
-        return menuId;
+    public Integer getModuleId() {
+        return moduleId;
     }
 
-    public void setMenuId(int menuId) {
-        this.menuId = menuId;
+    public void setModuleId(Integer moduleId) {
+        this.moduleId = moduleId;
     }
 
     public String getCode() {
@@ -65,19 +63,11 @@ public class Menu implements Serializable{
         this.remark = remark;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public int getLevel() {
+    public Short getLevel() {
         return level;
     }
 
-    public void setLevel(int level) {
+    public void setLevel(Short level) {
         this.level = level;
     }
 
@@ -89,27 +79,35 @@ public class Menu implements Serializable{
         this.parentCode = parentCode;
     }
 
-    public int getSortId() {
+    public Integer getSortId() {
         return sortId;
     }
 
-    public void setSortId(int sortId) {
+    public void setSortId(Integer sortId) {
         this.sortId = sortId;
     }
 
-    public int getIsValid() {
+    public Byte getIsValid() {
         return isValid;
     }
 
-    public void setIsValid(int isValid) {
+    public void setIsValid(Byte isValid) {
         this.isValid = isValid;
     }
 
-    public int getIsVisible() {
+    public Byte getIsVisible() {
         return isVisible;
     }
 
-    public void setIsVisible(int isVisible) {
+    public void setIsVisible(Byte isVisible) {
         this.isVisible = isVisible;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

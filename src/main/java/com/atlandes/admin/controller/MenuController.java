@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -54,8 +53,8 @@ public class MenuController {
 
     @ResponseBody
     @RequestMapping("addMenu")
-    public int addMenu(){
-        int a = menuService.addMenu();
+    public int addMenu(Menu menu){
+        int a = menuService.addMenu(menu);
         return a;
     }
 

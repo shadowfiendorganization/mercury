@@ -2,22 +2,22 @@ package com.atlandes.admin.po;
 
 import java.util.Date;
 
-/**
- * 类描述：基础信息实体
- * Created by TOSHIBA on 2017/05/26.
- */
-public class BaseInfo {
-    private Long id;
+public class Module {
+    private Integer id;
+
     private String name;
-    private String remark;//备注
-    private String sortId;//排序
+
+    private String remark;
+
+    private Integer sortId;
+
     private Date createTime;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -37,11 +37,11 @@ public class BaseInfo {
         this.remark = remark;
     }
 
-    public String getSortId() {
+    public Integer getSortId() {
         return sortId;
     }
 
-    public void setSortId(String sortId) {
+    public void setSortId(Integer sortId) {
         this.sortId = sortId;
     }
 
