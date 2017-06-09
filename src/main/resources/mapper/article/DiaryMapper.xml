@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atlandes.article.dao.DiaryMapper">
+    <select id="selectByTitle" resultType="com.atlandes.article.po.Diary" parameterType="java.lang.String">
+        SELECT
+        FROM diary_list
+        WHERE title = #{title}
+    </select>
+
+    <insert id="insert" parameterType="com.atlandes.article.po.Diary">
+      INSERT INTO diary_list(id,title,
+                              content,create_date,
+                              category_name,category_id)
+      VALUES (#{id},#{title},
+              #{content},#{create_date},
+              #{category_name},#{category_id})
+    </insert>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        DELETE FROM diary_list
+        WHERE id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    
+</mapper>
